@@ -10,8 +10,17 @@ const todoSlice = createSlice({
   reducers: {
     setProjectId(state, action) {
       state.projectId = action.payload
+    },
+    setComplete(state,action) { 
+      const todo = state.todos.find((todo) => todo.id === action.payload.id);
+      if (todo) {
+        todo.is_completed = action.payload.completed;
+      }
     }
   }
 })
-export const { setProjectId } = todoSlice.actions
+export const { 
+  setProjectId,
+  setComplete
+} = todoSlice.actions
 export default todoSlice.reducer

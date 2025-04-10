@@ -136,3 +136,31 @@ header details ul > li, footer, header {
   padding: 0 8px;
   width: 100%;
 }
+.status {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.description {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  padding: 8px;
+  background: #f0f0f0;
+}
+.description p {
+  text-align: left;
+}
+
+
+.status input[type="checkbox"] {
+  margin-left: 8px;
+}
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}

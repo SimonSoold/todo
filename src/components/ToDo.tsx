@@ -3,7 +3,10 @@ import { Todo,Project } from '../types';
 import {
   useSelector, useDispatch 
 } from 'react-redux'
-import {setProjectId} from "../redux/todoSlice";
+import {
+  setProjectId,
+  setComplete
+} from "../redux/todoSlice";
 import { selectFilteredTodos } from '../redux/selectors';
 export const TodoContainer: React.FC = () => {
   return (
@@ -61,13 +64,35 @@ export const TodoList: React.FC = () => {
     </>
   );
 }
-export const TodoItem: React.FC<Todo> = ({ id, title, is_completed }) => {
+export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, due_date, description }) => {
+  const dispatch = useDispatch();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setComplete({ id, completed: e.target.checked }));
+  }
   return (
     <div>
       <h2>{title}</h2>
+      {
+        description && description.length > 0
+        ?
+        <div
+          className="description"
+        >
+          <p>{description}</p>
+        </div>
+        : 
+        null
+      }
       <div>
-        <p>ID: {id}</p>
-        <p>Status: {is_completed ? 'Completed' : 'Not Completed'}</p>
+        <p>Priority: {priority}</p>
+        {
+          due_date && due_date.length > 0
+          ?
+          <p>Due date: {due_date.substring(0,10)}</p>
+          :
+          null
+        }
+        <p className="status">Status: <input type="checkbox" checked={is_completed} onChange={handleChange}/></p>
       </div>
     </div>
   );
