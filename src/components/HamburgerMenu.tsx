@@ -14,9 +14,12 @@ export const ThemeMenu: React.FC = () => {
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login")
+    document.getElementById("hamburger")?.removeAttribute("open");
   };
   return (
-    <details>
+    <details
+      id='hamburger'
+    >
         <summary>
             ☰
         </summary>

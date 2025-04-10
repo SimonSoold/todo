@@ -172,9 +172,13 @@ export const ProjectForm: React.FC = () => {
     dispatch(createProject({ name, color: color.length > 0 ? color : null }));
     navigate('/');
   };
+  const handleCancel = () => {
+    navigate('/');
+  }
   return (
     <form onSubmit={handleSubmit}>
       <input
+        name='name'
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -182,11 +186,16 @@ export const ProjectForm: React.FC = () => {
         required
       />
       <input
+        name='color'
         type="color"
         value={color}
         onChange={(e) => setColor(e.target.value)}
       />
-      <button type="submit">Add Project</button>
+      <div
+        className="todoActions">
+        <button onClick={handleCancel}>Cancel</button>
+        <button type="submit">Save</button>
+      </div>
     </form>
   );  
 }
@@ -251,6 +260,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
     return (
         <form onSubmit={handleSubmit}>
           <input
+              name='title'
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -258,11 +268,14 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
               required
           />
           <textarea
+              name='description'
+
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Todo Description"
           />
           <select
+              name='priority'
               value={priority}
               onChange={(e) => setPriority(e.target.value as Priority)}
               size={4}
@@ -272,6 +285,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
               <option value="high">High</option>
           </select>
           <input
+              name='due_date'
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
@@ -282,9 +296,10 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
           >
               Status:
               <input
-              type="checkbox"
-              checked={completed}
-              onChange={(e) => setCompleted(e.target.checked)}
+                name='completed'
+                type="checkbox"
+                checked={completed}
+                onChange={(e) => setCompleted(e.target.checked)}
               />
           </label>
           <div
