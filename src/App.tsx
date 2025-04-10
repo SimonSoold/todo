@@ -4,7 +4,10 @@ import { ThemeMenu } from './components/HamburgerMenu'
 import { Routes, Route, useLocation, useNavigate } from "react-router";
 import Todo from './components/ToDo';
 import Login from './components/Login';
-import { TodoFormContainer } from './components/ToDo';
+import { 
+  TodoFormContainer,
+  ProjectContainer
+ } from './components/ToDo';
 import {
   useSelector
 } from 'react-redux'
@@ -40,7 +43,7 @@ function App() {
             <Route path="/register" element={<Login/>} />
             <Route path="/todo/:id" element={<TodoFormContainer/>} />
             <Route path="/todo" element={<TodoFormContainer/>} />
-            <Route path="/project" element={<div>project</div>} />
+            <Route path="/project" element={<ProjectContainer />} />
             <Route path="*" element={<h2>404 Not Found</h2>} />
           </Routes>
         </div>

@@ -13,9 +13,14 @@ import {
   setComplete,
   deleteTodo,
   editTodo,
-  addTodo
+  addTodo,
+  createProject
 } from "../redux/todoSlice";
-import { selectFilteredTodos } from '../redux/selectors';
+import { 
+  selectFilteredTodos,
+  selectProjectId,
+  selectProjects,
+ } from '../redux/selectors';
 import { 
   Link, 
   useNavigate,
@@ -46,8 +51,8 @@ export const TodoContainer: React.FC = () => {
 }
 export const ProjectSelector: React.FC = () => {
   const dispatch = useDispatch();
-  const projectId = useSelector((state:any)=> state.todo.projectId);
-  const projects = useSelector((state:any)=> state.todo.projects);
+  const projectId = useSelector(selectProjectId);
+  const projects = useSelector(selectProjects);
   const handleChange = ( e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setProjectId(e.target.value));
   }
@@ -144,14 +149,28 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
     </div>
   );
 }
+export const ProjectContainer: React.FC = () => {
+  return (
+    <div
+      className='container'
+    >
+      <ProjectForm />
+    </div>
+  );
+}
 export const ProjectForm: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [color, setColor] = useState('#000000');
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    //onSubmit({ name, color });
-    setName('');
-    setColor('#000000');
+    if (!name) {
+      alert('Project name is required');
+      return;
+    }
+    dispatch(createProject({ name, color: color.length > 0 ? color : null }));
+    navigate('/');
   };
   return (
     <form onSubmit={handleSubmit}>
@@ -174,11 +193,14 @@ export const ProjectForm: React.FC = () => {
 export const TodoFormContainer: React.FC = () => {
   const dispatch = useDispatch();
   const todos = useSelector(selectFilteredTodos);
-  const userId = useSelector((state:any)=> state.user.userId);
-  const projectId = useSelector((state:any)=> state.todo.projectId);
+  const userId = useSelector((state:any) => state.user.id);
+  const projectId = useSelector(selectProjectId);
   const params = useParams()
   const navigate = useNavigate();
   const todo = todos.find((todo: Todo) => todo.id === params?.id) || {
+    id: '', // Default empty string for id
+    created_at: '', // Default empty string for created_at
+    updated_at: '', // Default empty string for updated_at
     title: '',
     description: '',
     is_completed: false,
@@ -212,15 +234,19 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
     const [priority, setPriority] = useState<Priority>(todo.priority);
     const [dueDate, setDueDate] = useState<string>(todo.due_date || '');
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        handleSave({
-            ...todo,
-            description,
-            is_completed: completed,
-            priority,
-            due_date: dueDate,
-            title
-        })
+      e.preventDefault();
+      if (!title) {
+        alert('Title is required');
+        return;
+      }
+      handleSave({
+          ...todo,
+          description,  
+          is_completed: completed,
+          priority,
+          due_date: dueDate,
+          title
+      })
     };
     return (
         <form onSubmit={handleSubmit}>

@@ -35,14 +35,23 @@ const todoSlice = createSlice({
       }
     },
     addTodo(state, action) {
+      const todos = state.todos.filter((todo) => todo.project_id === state.projectId);
       const newTodo = {
-        id: "project-" + state.projects.length + 1,
+        id: "project-" + todos.length + 1,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         project_id: state.projectId,
         ...action.payload
       };        
       state.todos.push(newTodo);
+    },
+    createProject(state, action) {  
+      const newProject = {
+        id: "project-" + state.projects.length + 1,
+        created_at: new Date().toISOString(),
+        ...action.payload
+      };
+      state.projects.push(newProject);
     }
 }})
 export const { 
@@ -50,6 +59,7 @@ export const {
   setComplete,
   deleteTodo,
   editTodo,
-  addTodo
+  addTodo,
+  createProject
 } = todoSlice.actions
 export default todoSlice.reducer
