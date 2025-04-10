@@ -5,14 +5,28 @@ import {
 } from 'react-redux'
 import {
   setProjectId,
-  setComplete
+  setComplete,deleteTodo
 } from "../redux/todoSlice";
 import { selectFilteredTodos } from '../redux/selectors';
+import { 
+  Link, 
+  useNavigate
+ } from 'react-router';
 export const TodoContainer: React.FC = () => {
   return (
     <div
       className='container'
     >
+      <div
+        className='navigation'
+      >
+        <Link to="/project">
+          New Project
+        </Link>
+        <Link to="/todo">
+          New Todo
+        </Link>
+      </div>
       <ProjectSelector />
       <div
         className='todoList'>
@@ -66,8 +80,15 @@ export const TodoList: React.FC = () => {
 }
 export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, due_date, description }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setComplete({ id, completed: e.target.checked }));
+  }
+  const handleEdit = () => {
+    navigate(`/todo/${id}`)
+  }
+  const handleDelete = () => {
+    dispatch(deleteTodo({ id }));
   }
   return (
     <div>
@@ -83,16 +104,33 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
         : 
         null
       }
-      <div>
-        <p>Priority: {priority}</p>
-        {
-          due_date && due_date.length > 0
-          ?
-          <p>Due date: {due_date.substring(0,10)}</p>
-          :
-          null
-        }
-        <p className="status">Status: <input type="checkbox" checked={is_completed} onChange={handleChange}/></p>
+      <div
+        className="todoItem">
+        <div className='todoDetails'>
+          <p>Priority: {priority}</p>
+          {
+            due_date && due_date.length > 0
+            ?
+            <p>Due date: {due_date.substring(0,10)}</p>
+            :
+            null
+          }
+          <p className="status">Status: <input type="checkbox" checked={is_completed} onChange={handleChange}/></p>
+        </div>
+        <div className='todoActions'>
+          <button
+            className="edit"
+            onClick={handleEdit}
+          >
+            Edit
+          </button>
+          <button
+            className="delete"
+            onClick={handleDelete}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -87,6 +87,21 @@ header details ul > li, footer, header {
   align-items: center;
 }
 
+.navigation {
+  display: flex;
+  width: 320px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.navigation a {
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+  white-space: nowrap;
+}
+
 .todoProjectSelector {
   padding: '10px';
   margin-bottom: '10px';
@@ -129,12 +144,31 @@ header details ul > li, footer, header {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
-.todoList > div > div {
+.todoDetails {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding: 0 8px;
   width: 100%;
+}
+.todoActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+.todoActions > button {
+  background: none;
+  color: blue;
+  border: none;
+  padding: none;
+  border-radius: none;
+  cursor: pointer;
+
+}
+.todoActions > button:last-child {
+  margin-left: 8px;
 }
 .status {
   display: flex;

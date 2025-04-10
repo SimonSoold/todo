@@ -22,6 +22,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Todo/>} />
             <Route path="/auth" element={<Login/>} />
+            <Route path="/todo/:id" element={<div>todo</div>} />
+            <Route path="/project" element={<div>project</div>} />
             <Route path="*" element={<h2>404 Not Found</h2>} />
           </Routes>
         </div>

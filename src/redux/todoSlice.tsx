@@ -16,11 +16,18 @@ const todoSlice = createSlice({
       if (todo) {
         todo.is_completed = action.payload.completed;
       }
+    },
+    deleteTodo(state, action) {
+      const index = state.todos.findIndex((todo) => todo.id === action.payload.id);
+      if (index !== -1) {
+        state.todos.splice(index, 1);
+      }
     }
   }
 })
 export const { 
   setProjectId,
-  setComplete
+  setComplete,
+  deleteTodo
 } = todoSlice.actions
 export default todoSlice.reducer
