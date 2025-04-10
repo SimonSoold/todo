@@ -6,9 +6,8 @@ export const ThemeMenu: React.FC = () => {
             ☰
         </summary>
         <ul>
-            <li>hej hej</li>
-            <li>hej hej</li>
-            <li>hej hej</li>
+            <li>Settings</li>
+            <li>Logout</li>
         </ul>
     </details>
   )

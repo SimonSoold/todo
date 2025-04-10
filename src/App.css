@@ -58,16 +58,21 @@ main div div {
 
 
 header details {
-  background: #242424;
-  color: white;
   cursor: pointer;
-  font-size: 32px;
+  font-size: 2rem;
   position: relative;
   display: inline-block;
+  background: #242424;
+  color: white;
 }
 header details > summary {
   border: none;
   list-style: none;
+  transition: all 1s ease-in-out;
+  cursor: pointer;
+}
+header details > summary:hover {
+  color: lightgray;
 }
 header details > summary::-webkit-details-marker {
   display: none;
@@ -75,8 +80,21 @@ header details > summary::-webkit-details-marker {
 header details ul{
   position: absolute;
   list-style: none;
-  right: 0
+  right: 0;
+  color: white;
+  text-align: right;
+  font-size: 1rem;
 }
+header details ul > li {
+  transition: all 1s ease-in-out;
+  border-bottom: 0px dotted transparent;
+  cursor: pointer
+}
+header details ul > li:hover {
+  color: lightgray;
+  border-bottom: 1px solid lightgrey;
+}
+
 header details ul > li, footer, header {
   white-space: nowrap;
 }
@@ -165,7 +183,6 @@ header details ul > li, footer, header {
   padding: none;
   border-radius: none;
   cursor: pointer;
-
 }
 .todoActions > button:last-child {
   margin-left: 8px;
@@ -193,8 +210,12 @@ header details ul > li, footer, header {
 
 .status input[type="checkbox"] {
   margin-left: 8px;
+  cursor: pointer;
 }
 input[type="checkbox"] {
   width: 20px;
   height: 20px;
+}
+option {
+  cursor: pointer;
 }
