@@ -1,10 +1,25 @@
+import { useEffect } from 'react';
 import './App.css'
 import { ThemeMenu } from './components/HamburgerMenu'
-import { Routes, Route } from "react-router";
+import { Routes, Route, useLocation, useNavigate } from "react-router";
 import Todo from './components/ToDo';
 import Login from './components/Login';
-
+import { TodoFormContainer } from './components/ToDo';
+import {
+  useSelector
+} from 'react-redux'
 function App() {
+  const location = useLocation();
+  const loggedIn = useSelector((state:any)=> state.user.loggedIn);
+  const navigate = useNavigate();
+  useEffect(() => {
+    document.title = "To Be Is To Do";
+  }, []);
+  useEffect(() => {
+    if (!loggedIn && (location.pathname !== '/login' && location.pathname !== '/register')) {
+      navigate('/login');
+    }
+  }, [location]);
   return (
     <>
       <header>
@@ -21,8 +36,10 @@ function App() {
         <div>
           <Routes>
             <Route path="/" element={<Todo/>} />
-            <Route path="/auth" element={<Login/>} />
-            <Route path="/todo/:id" element={<div>todo</div>} />
+            <Route path="/login" element={<Login/>} />
+            <Route path="/register" element={<Login/>} />
+            <Route path="/todo/:id" element={<TodoFormContainer/>} />
+            <Route path="/todo" element={<TodoFormContainer/>} />
             <Route path="/project" element={<div>project</div>} />
             <Route path="*" element={<h2>404 Not Found</h2>} />
           </Routes>

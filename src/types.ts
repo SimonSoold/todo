@@ -22,7 +22,10 @@ export interface User {
   }
   
   export type Priority = 'low' | 'medium' | 'high';
-  
+  export interface TodoFormProps {
+    todo: Todo;
+    handleSave: (todo: Todo|null) => void;
+  }
   export interface Todo {
     id: string;
     user_id: string;

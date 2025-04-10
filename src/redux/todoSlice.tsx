@@ -15,6 +15,7 @@ const todoSlice = createSlice({
       const todo = state.todos.find((todo) => todo.id === action.payload.id);
       if (todo) {
         todo.is_completed = action.payload.completed;
+        todo.updated_at = new Date().toISOString();
       }
     },
     deleteTodo(state, action) {
@@ -22,12 +23,33 @@ const todoSlice = createSlice({
       if (index !== -1) {
         state.todos.splice(index, 1);
       }
+    },
+    editTodo(state, action) {
+      let index = state.todos.findIndex((todo) => todo.id === action.payload.id);
+      if (index !== -1) {
+        state.todos[index] = {
+          ...state.todos[index],
+          ...action.payload,
+          updated_at: new Date().toISOString(),
+        }
+      }
+    },
+    addTodo(state, action) {
+      const newTodo = {
+        id: "project-" + state.projects.length + 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        project_id: state.projectId,
+        ...action.payload
+      };        
+      state.todos.push(newTodo);
     }
-  }
-})
+}})
 export const { 
   setProjectId,
   setComplete,
-  deleteTodo
+  deleteTodo,
+  editTodo,
+  addTodo
 } = todoSlice.actions
 export default todoSlice.reducer

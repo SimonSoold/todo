@@ -1,16 +1,25 @@
-import React from 'react';
-import { Todo,Project } from '../types';
+import React, {useState} from 'react';
+import { Todo,
+  Project,
+  TodoFormProps,
+  Priority
+} from '../types';
 import {
-  useSelector, useDispatch 
+  useSelector, 
+  useDispatch
 } from 'react-redux'
 import {
   setProjectId,
-  setComplete,deleteTodo
+  setComplete,
+  deleteTodo,
+  editTodo,
+  addTodo
 } from "../redux/todoSlice";
 import { selectFilteredTodos } from '../redux/selectors';
 import { 
   Link, 
-  useNavigate
+  useNavigate,
+  useParams
  } from 'react-router';
 export const TodoContainer: React.FC = () => {
   return (
@@ -71,8 +80,8 @@ export const TodoList: React.FC = () => {
   return (
     <>
       {
-        todos.map((todo: Todo) => (
-          <TodoItem key={todo.id} {...todo} />
+        todos.map((todo: Todo,index:number) => (
+          <TodoItem key={index} {...todo} />
         ))
       }
     </>
@@ -135,17 +144,84 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
     </div>
   );
 }
-export const TodoForm: React.FC<{ onSubmit: (todo: Todo) => void }> = ({ onSubmit }) => {
-    const [title, setTitle] = React.useState('');
-    const [completed, setCompleted] = React.useState(false);
-    
+export const ProjectForm: React.FC = () => {
+  const [name, setName] = useState('');
+  const [color, setColor] = useState('#000000');
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    //onSubmit({ name, color });
+    setName('');
+    setColor('#000000');
+  };
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Project Name"
+        required
+      />
+      <input
+        type="color"
+        value={color}
+        onChange={(e) => setColor(e.target.value)}
+      />
+      <button type="submit">Add Project</button>
+    </form>
+  );  
+}
+export const TodoFormContainer: React.FC = () => {
+  const dispatch = useDispatch();
+  const todos = useSelector(selectFilteredTodos);
+  const userId = useSelector((state:any)=> state.user.userId);
+  const projectId = useSelector((state:any)=> state.todo.projectId);
+  const params = useParams()
+  const navigate = useNavigate();
+  const todo = todos.find((todo: Todo) => todo.id === params?.id) || {
+    title: '',
+    description: '',
+    is_completed: false,
+    due_date: '',
+    priority: 'low',
+    project_id: projectId,
+    user_id: userId,
+  }
+  const handleSave = (newTodo:Todo|null) => {
+    if (params?.id && newTodo) {
+      dispatch(editTodo(newTodo));
+    } else {
+      dispatch(addTodo(newTodo));
+    }
+    navigate('/');
+  }
+  return (
+    <div
+      className='container'
+    >
+      <TodoForm todo={todo} handleSave={handleSave}/>
+    </div>
+  );
+}
+
+
+export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoFormProps) => {
+    const [title, setTitle] = useState<string>(todo.title);
+    const [description, setDescription] = useState<string>(todo.description);
+    const [completed, setCompleted] = useState<boolean>(todo.is_completed);
+    const [priority, setPriority] = useState<Priority>(todo.priority);
+    const [dueDate, setDueDate] = useState<string>(todo.due_date || '');
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        //onSubmit({ id: Date.now().toString(), title, completed });
-        setTitle('');
-        setCompleted(false);
+        handleSave({
+            ...todo,
+            description,
+            is_completed: completed,
+            priority,
+            due_date: dueDate,
+            title
+        })
     };
-    
     return (
         <form onSubmit={handleSubmit}>
           <input
@@ -155,15 +231,41 @@ export const TodoForm: React.FC<{ onSubmit: (todo: Todo) => void }> = ({ onSubmi
               placeholder="Todo Title"
               required
           />
-          <label>
+          <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Todo Description"
+          />
+          <select
+              value={priority}
+              onChange={(e) => setPriority(e.target.value as Priority)}
+              size={4}
+          >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+          </select>
+          <input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              min={new Date().toISOString()} // Set minimum date to today
+          />
+          <label
+            className="status"
+          >
+              Status:
               <input
               type="checkbox"
               checked={completed}
               onChange={(e) => setCompleted(e.target.checked)}
               />
-              Completed
           </label>
-          <button type="submit">Add Todo</button>
+          <div
+            className="todoActions">
+            <button onClick={() => handleSave(null)}>Cancel</button>
+            <button type="submit">Save</button>
+          </div>
         </form>
     );
 }

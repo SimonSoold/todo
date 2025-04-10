@@ -176,13 +176,17 @@ header details ul > li, footer, header {
   align-items: center;
   width: 100%;
 }
-.todoActions > button {
+.todoActions > button, form button {
   background: none;
   color: blue;
   border: none;
   padding: none;
   border-radius: none;
   cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.todoActions > button:hover, form button:hover {
+  color: lightgray;
 }
 .todoActions > button:last-child {
   margin-left: 8px;
@@ -218,4 +222,26 @@ input[type="checkbox"] {
 }
 option {
   cursor: pointer;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #f0f0f0;
+  transition: background-color 0.3s;
+  color: black;
+  width: 320px;
+}
+form > *:not(:last-child) {
+  margin-bottom: 8px;
+}
+form button {
+  align-self: flex-end;
+  font-size: 1rem;
 }
