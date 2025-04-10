@@ -1,33 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { ThemeMenu } from './components/HamburgerMenu'
+import { Routes, Route } from "react-router";
+import Todo from './components/ToDo';
+import Login from './components/Login';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <header>
+        <div>
+          <h1>To Be Is To Do</h1>
+          <p>To Do Is To Be</p>
+          <p>Do Be Do Be Do</p>
+        </div>
+        <div>
+          <ThemeMenu />
+        </div>
+      </header>
+      <main>
+        <div>
+          <Routes>
+            <Route path="/" element={<Todo/>} />
+            <Route path="/auth" element={<Login/>} />
+            <Route path="*" element={<h2>404 Not Found</h2>} />
+          </Routes>
+        </div>
+      </main>
+      <footer>
+        <div>
+          <p>Simon Soold</p>
+          <p>soold.simon@gmail.com</p>
+        </div>
+        <div>
+          <p>Copyright © 2025</p>
+          <p>All rights reserved</p>
+        </div>
+      </footer>
     </>
   )
 }

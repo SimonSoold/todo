@@ -1,0 +1,89 @@
+{
+    "users": [
+      {
+        "id": "user-1",
+        "name": "Alice Johnson",
+        "email": "alice@example.com",
+        "password_hash": "hashed_pw",
+        "created_at": "2025-04-01T10:00:00Z"
+      }
+    ],
+    "projects": [
+      {
+        "id": "project-1",
+        "user_id": "user-1",
+        "name": "Work",
+        "color": "#FFB74D",
+        "created_at": "2025-04-01T11:00:00Z"
+      },
+      {
+        "id": "project-2",
+        "user_id": "user-1",
+        "name": "Personal",
+        "color": "#4FC3F7",
+        "created_at": "2025-04-01T11:05:00Z"
+      }
+    ],
+    "labels": [
+      {
+        "id": "label-1",
+        "user_id": "user-1",
+        "name": "Urgent",
+        "color": "#E57373"
+      },
+      {
+        "id": "label-2",
+        "user_id": "user-1",
+        "name": "Home",
+        "color": "#81C784"
+      }
+    ],
+    "todos": [
+      {
+        "id": "todo-1",
+        "user_id": "user-1",
+        "title": "Finish presentation",
+        "description": "Prepare slides for the Monday meeting",
+        "is_completed": false,
+        "due_date": "2025-04-14T09:00:00Z",
+        "priority": "high",
+        "project_id": "project-1",
+        "created_at": "2025-04-08T14:00:00Z",
+        "updated_at": "2025-04-08T14:00:00Z"
+      },
+      {
+        "id": "todo-2",
+        "user_id": "user-1",
+        "title": "Buy groceries",
+        "description": "Milk, Eggs, Bread, Coffee",
+        "is_completed": false,
+        "due_date": "2025-04-10T18:00:00Z",
+        "priority": "medium",
+        "project_id": "project-2",
+        "created_at": "2025-04-09T12:00:00Z",
+        "updated_at": "2025-04-09T12:00:00Z"
+      },
+      {
+        "id": "todo-3",
+        "user_id": "user-1",
+        "title": "Call plumber",
+        "description": "",
+        "is_completed": true,
+        "due_date": null,
+        "priority": "low",
+        "project_id": "project-2",
+        "created_at": "2025-04-05T15:30:00Z",
+        "updated_at": "2025-04-06T09:00:00Z"
+      }
+    ],
+    "task_label_map": [
+      {
+        "task_id": "todo-1",
+        "label_id": "label-1"
+      },
+      {
+        "task_id": "todo-2",
+        "label_id": "label-2"
+      }
+    ]
+  }
