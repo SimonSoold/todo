@@ -57,7 +57,7 @@ main div div {
 }
 
 
-details {
+header details {
   background: #242424;
   color: white;
   cursor: pointer;
@@ -65,19 +65,19 @@ details {
   position: relative;
   display: inline-block;
 }
-details > summary {
+header details > summary {
   border: none;
   list-style: none;
 }
-details > summary::-webkit-details-marker {
+header details > summary::-webkit-details-marker {
   display: none;
 }
-details ul{
+header details ul{
   position: absolute;
   list-style: none;
   right: 0
 }
-details ul > li, footer, header {
+header details ul > li, footer, header {
   white-space: nowrap;
 }
 
@@ -92,7 +92,11 @@ details ul > li, footer, header {
   margin-bottom: '10px';
 }
 .todoList {
-  padding: 16px
+  padding: 16px;
+  height: 480px;
+  overflow-y: auto;
+  display: flex;
+  justify-content: flex-start;
 }
 .todoList > div {
   display: flex;
@@ -101,10 +105,29 @@ details ul > li, footer, header {
   margin-bottom: 16px;
   padding: 8px;
   border-radius: 4px;
-  background-color: #f0f0f0;
+  background: #f0f0f0;
   transition: background-color 0.3s;  
   color: black;
   width: 320px;
+}
+.todoProjectSelector {
+  width: 320px;
+}
+.todoProjectSelector select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  background: #f0f0f0;
+  border: none;
+  height: 120px;
+  font-size: 1rem;
+}
+.todoProjectSelector select::-webkit-scrollbar, .todoList::-webkit-scrollbar {
+  display: none;
+}
+.todoProjectSelector select, .todoList {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 .todoList > div > div {
   display: flex;

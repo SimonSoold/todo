@@ -10,7 +10,6 @@ export const TodoContainer: React.FC = () => {
     <div
       className='container'
     >
-      <h2>Todo List</h2>
       <ProjectSelector />
       <div
         className='todoList'>
@@ -35,7 +34,7 @@ export const ProjectSelector: React.FC = () => {
         ?
         <p>No projects available.</p>
         : 
-        <select value={projectId} onChange={handleChange}>
+        <select value={projectId} onChange={handleChange} size={4}>
           {
             projects.map((project: Project, index:number) => {
               return (
@@ -65,7 +64,7 @@ export const TodoList: React.FC = () => {
 export const TodoItem: React.FC<Todo> = ({ id, title, is_completed }) => {
   return (
     <div>
-      <h3>{title}</h3>
+      <h2>{title}</h2>
       <div>
         <p>ID: {id}</p>
         <p>Status: {is_completed ? 'Completed' : 'Not Completed'}</p>
