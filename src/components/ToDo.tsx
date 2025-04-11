@@ -30,8 +30,7 @@ import {
   useNavigate,
   useParams
 } from 'react-router';
-import { isNearWhite } from '../utils/utils';
-
+import ColorPicker from './ColorPicker';
 
 export const TodoContainer: React.FC = () => {
   return (
@@ -137,9 +136,7 @@ const AddLabel: React.FC<{ id: string }> = ({ id }) => {
     setColor('#000000')
   }
   const handleColor = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isNearWhite(e.target.value)) {
-      setColor(e.target.value)
-    } 
+    setColor(e.target.value)
   }
   if (edit) {
     return (
@@ -152,15 +149,17 @@ const AddLabel: React.FC<{ id: string }> = ({ id }) => {
           onChange={handleChange}
           value={name}
         />
-        <input
+        <span
           style={{
             margin: "8px 0"
           }}
-          name='color'
-          type="color"
-          value={color}
-          onChange={handleColor}
-        />
+          className="labelColorPicker"
+        >
+          <ColorPicker         
+              color={color}
+              handleColor={handleColor}
+          />
+        </span>
         <div>
           <button
             className="cancel"
@@ -302,9 +301,7 @@ export const ProjectForm: React.FC = () => {
     navigate('/');
   }
   const handleColor = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isNearWhite(e.target.value)) {
-      setColor(e.target.value)
-    } 
+    setColor(e.target.value)
   }
   return (
     <form onSubmit={handleSubmit}>
@@ -316,12 +313,14 @@ export const ProjectForm: React.FC = () => {
         placeholder="Project Name"
         required
       />
-      <input
-        name='color'
-        type="color"
-        value={color}
-        onChange={handleColor}
-      />
+      <span
+        className="labelColorPicker"
+      >
+        <ColorPicker       
+          color={color}
+          handleColor={handleColor}
+        />
+      </span>
       <div
         className="todoActions">
         <button onClick={handleCancel}>Cancel</button>

@@ -239,6 +239,14 @@ header details ul > li, footer, header {
 .addLabel > div button {
   margin-left: 8px;
 }
+.labelColorPicker {
+  display: flex;
+  flex-direction: column;
+  height: 64px;
+}
+.labelColorPicker p {
+  font-size: 0.8rem;
+}
 
 .status input[type="checkbox"] {
   margin-left: 8px;

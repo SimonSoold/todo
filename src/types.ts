@@ -44,6 +44,11 @@ export interface User {
     task_id: string;
     label_id: string;
   }
+
+  export interface ColorPickerProps {
+    handleColor: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    color: string;
+  }
   
   // --- Derived Types (for UI convenience) ---
 
