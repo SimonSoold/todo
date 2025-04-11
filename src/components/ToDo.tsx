@@ -65,7 +65,7 @@ export const ProjectSelector: React.FC = () => {
         ?
         <p>No projects available.</p>
         : 
-        <select value={projectId} onChange={handleChange} size={4}>
+        <select name="project" value={projectId} onChange={handleChange} size={4}>
           {
             projects.map((project: Project, index:number) => {
               return (
@@ -129,7 +129,7 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
             :
             null
           }
-          <p className="status">Status: <input type="checkbox" checked={is_completed} onChange={handleChange}/></p>
+          <p className="status">Status: <input name="is_completed" type="checkbox" checked={is_completed} onChange={handleChange}/></p>
         </div>
         <div className='todoActions'>
           <button
@@ -237,6 +237,7 @@ export const TodoFormContainer: React.FC = () => {
 
 
 export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoFormProps) => {
+    const navigate = useNavigate();
     const [title, setTitle] = useState<string>(todo.title);
     const [description, setDescription] = useState<string>(todo.description);
     const [completed, setCompleted] = useState<boolean>(todo.is_completed);
@@ -257,6 +258,9 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
           title
       })
     };
+    const handleCancel = () => {
+      navigate('/');
+    }
     return (
         <form onSubmit={handleSubmit}>
           <input
@@ -269,7 +273,6 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
           />
           <textarea
               name='description'
-
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Todo Description"
@@ -285,11 +288,12 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
               <option value="high">High</option>
           </select>
           <input
+              autoComplete='true'
               name='due_date'
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              min={new Date().toISOString()} // Set minimum date to today
+              min={new Date().toISOString().substring(0,10)} // Set minimum date to today
           />
           <label
             className="status"
@@ -304,7 +308,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
           </label>
           <div
             className="todoActions">
-            <button onClick={() => handleSave(null)}>Cancel</button>
+            <button onClick={handleCancel}>Cancel</button>
             <button type="submit">Save</button>
           </div>
         </form>
