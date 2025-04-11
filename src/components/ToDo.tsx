@@ -99,6 +99,10 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
     dispatch(setComplete({ id, completed: e.target.checked }));
   }
   const handleEdit = () => {
+    if (!id || id.length === 0) {
+      alert('Todo ID is required');
+      return;
+    }
     navigate(`/todo/${id}`)
   }
   const handleDelete = () => {
@@ -307,7 +311,8 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
               />
           </label>
           <div
-            className="todoActions">
+            className="todoActions"
+          >
             <button onClick={handleCancel}>Cancel</button>
             <button type="submit">Save</button>
           </div>

@@ -35,9 +35,12 @@ const todoSlice = createSlice({
       }
     },
     addTodo(state, action) {
-      const todos = state.todos.filter((todo) => todo.project_id === state.projectId);
+      const todos = state.todos
+      delete action.payload.id
+      delete action.payload.created_at
+      delete action.payload.updated_at
       const newTodo = {
-        id: "project-" + todos.length + 1,
+        id: "todo-" + todos.length + 1,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         project_id: state.projectId,
