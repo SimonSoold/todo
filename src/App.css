@@ -155,10 +155,10 @@ header details ul > li, footer, header {
   height: 120px;
   font-size: 1rem;
 }
-.todoProjectSelector select::-webkit-scrollbar, .todoList::-webkit-scrollbar {
+.todoProjectSelector select::-webkit-scrollbar, .todoList::-webkit-scrollbar, .todoDetails > span::-webkit-scrollbar {
   display: none;
 }
-.todoProjectSelector select, .todoList {
+.todoProjectSelector select, .todoList, .todoDetails > span {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
@@ -169,6 +169,17 @@ header details ul > li, footer, header {
   padding: 0 8px;
   width: 100%;
 }
+.todoDetails > span {
+  width: 100%;
+  text-align: left;
+  overflow-y: auto;
+}
+.todoDetails p > span {
+  margin-left: 4px;
+}
+.todoDetails p > span span {
+  margin-right: 4px;
+}
 .todoActions {
   display: flex;
   flex-direction: row;
@@ -176,7 +187,7 @@ header details ul > li, footer, header {
   align-items: center;
   width: 100%;
 }
-.todoActions > button, form button {
+.todoActions > button, form button, .addLabel button, .addLabelButton {
   background: none;
   color: blue;
   border: none;
@@ -185,7 +196,7 @@ header details ul > li, footer, header {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
-.todoActions > button:hover, form button:hover {
+.todoActions > button:hover, form button:hover, .addLabel button:hover, .addLabelButton:hover {
   color: lightgray;
 }
 .todoActions > button:last-child {
@@ -210,7 +221,24 @@ header details ul > li, footer, header {
 .description p {
   text-align: left;
 }
-
+.addLabel {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+}
+.addLabel > div {
+  align-self: flex-end;
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+}
+.addLabel > div button {
+  margin-left: 8px;
+}
 
 .status input[type="checkbox"] {
   margin-left: 8px;

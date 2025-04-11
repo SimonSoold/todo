@@ -6,6 +6,8 @@ const todoSlice = createSlice({
     todos: [...data.todos],
     projectId: data.projects[0].id,
     projects: [...data.projects],
+    labels: [...data.labels],
+    taskLabelMaps: [...data.task_label_map],
   },
   reducers: {
     setProjectId(state, action) {
@@ -40,7 +42,7 @@ const todoSlice = createSlice({
       delete action.payload.created_at
       delete action.payload.updated_at
       const newTodo = {
-        id: "todo-" + todos.length + 1,
+        id: "todo-" + (todos.length + 1),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         project_id: state.projectId,
@@ -50,11 +52,29 @@ const todoSlice = createSlice({
     },
     createProject(state, action) {  
       const newProject = {
-        id: "project-" + state.projects.length + 1,
+        id: "project-" + (state.projects.length + 1),
         created_at: new Date().toISOString(),
         ...action.payload
       };
       state.projects.push(newProject);
+    },
+    addLabel(state, action) {   
+      const labelMap = state.taskLabelMaps.find(item => item.task_id === action.payload.id)
+      const newLabel = {
+        id: labelMap ? labelMap.label_id : "label-" + (state.labels.length + 1),
+        user_id:action.payload.user_id,
+        name:action.payload.name,
+        color: action.payload.color,
+        created_at: new Date().toISOString(),
+      };
+      if (!labelMap) {
+        const newTaskLabelMap = {
+          task_id: action.payload.id,
+          label_id: newLabel.id
+        }
+        state.taskLabelMaps.push(newTaskLabelMap);
+      }
+      state.labels.push(newLabel);
     }
 }})
 export const { 
@@ -63,6 +83,7 @@ export const {
   deleteTodo,
   editTodo,
   addTodo,
-  createProject
+  createProject,
+  addLabel
 } = todoSlice.actions
 export default todoSlice.reducer

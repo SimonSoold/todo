@@ -19,6 +19,7 @@ export interface User {
     user_id: string;
     name: string;
     color?: string | null;
+    created_at: string;
   }
   
   export type Priority = 'low' | 'medium' | 'high';

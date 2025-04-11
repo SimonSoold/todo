@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { Todo,
   Project,
   TodoFormProps,
-  Priority
+  Priority,
+  Label
 } from '../types';
 import {
   useSelector, 
@@ -14,18 +15,24 @@ import {
   deleteTodo,
   editTodo,
   addTodo,
-  createProject
+  createProject,
+  addLabel
 } from "../redux/todoSlice";
 import { 
   selectFilteredTodos,
   selectProjectId,
   selectProjects,
- } from '../redux/selectors';
+  selectLabelsByTodoId,
+  selectProject
+} from '../redux/selectors';
 import { 
   Link, 
   useNavigate,
   useParams
- } from 'react-router';
+} from 'react-router';
+import { isNearWhite } from '../utils/utils';
+
+
 export const TodoContainer: React.FC = () => {
   return (
     <div
@@ -53,12 +60,17 @@ export const ProjectSelector: React.FC = () => {
   const dispatch = useDispatch();
   const projectId = useSelector(selectProjectId);
   const projects = useSelector(selectProjects);
+  const currentProject = useSelector(selectProject)
   const handleChange = ( e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setProjectId(e.target.value));
   }
   return (
     <div
       className='todoProjectSelector'
+      style={{
+        background: currentProject?.color || '#fff',
+        padding: "8px"
+      }}
     >
       {
         projects.length === 0
@@ -92,9 +104,97 @@ export const TodoList: React.FC = () => {
     </>
   );
 }
+const AddLabel: React.FC<{ id: string }> = ({ id }) => {
+  const user_id = useSelector((state:any) => state.user.id);
+  const [edit, setEdit] = useState<boolean>(false); 
+  const [name, setName] = useState<string>('');
+  const [color, setColor] = useState<string>('#000000')
+  const dispatch = useDispatch();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  }
+  const handleSave = () => {
+    if (!name || name.length === 0) {
+      alert('Label name is required');
+      return;
+    }
+    dispatch(addLabel({ name, id, user_id, color }));
+    setName('');
+    setColor('#000000')
+    setEdit(!edit);
+  }
+  const handleAdd = () => {
+    if (!name || name.length === 0) {
+      alert('Label name is required');
+      return;
+    }
+    dispatch(addLabel({ name, id, user_id, color }));
+    setName('');
+  }
+  const handleCancel = () => {
+    setEdit(!edit);
+    setName('');
+    setColor('#000000')
+  }
+  const handleColor = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isNearWhite(e.target.value)) {
+      setColor(e.target.value)
+    } 
+  }
+  if (edit) {
+    return (
+      <div
+        className="addLabel"
+      >
+        <input
+          type="text"
+          placeholder="Add Label"
+          onChange={handleChange}
+          value={name}
+        />
+        <input
+          style={{
+            margin: "8px 0"
+          }}
+          name='color'
+          type="color"
+          value={color}
+          onChange={handleColor}
+        />
+        <div>
+          <button
+            className="cancel"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleAdd}
+          >
+            Add
+          </button>
+          <button
+            onClick={handleSave}
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    )
+  }
+  return (
+    <button
+      className="addLabelButton"
+      onClick={() => setEdit(!edit)}
+    >
+      Add Label
+    </button>
+  )
+}
 export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, due_date, description }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate()
+  const labels = useSelector((state:any) => selectLabelsByTodoId(state, id));
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setComplete({ id, completed: e.target.checked }));
   }
@@ -133,7 +233,29 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
             :
             null
           }
-          <p className="status">Status: <input name="is_completed" type="checkbox" checked={is_completed} onChange={handleChange}/></p>
+          <p className="status">Completed: <input name="is_completed" type="checkbox" checked={is_completed} onChange={handleChange}/></p>
+          <span>
+            {
+              labels && labels.length > 0
+              ?
+              <p>Labels:
+                <span>
+                  {labels.map((label:Label, index:number) => {
+                  let currentLabel = label.name
+                  if (labels.length !== 1) {
+                    if (labels.length -1 > index) {
+                      currentLabel += ","
+                    }
+                  } 
+                  return <span key={index} style={{color:label.color || "default"}}>{currentLabel}</span>
+                })}
+                </span>
+              </p>
+              :
+              null
+            }
+          </span>
+          <AddLabel id={id}/>
         </div>
         <div className='todoActions'>
           <button
@@ -179,6 +301,11 @@ export const ProjectForm: React.FC = () => {
   const handleCancel = () => {
     navigate('/');
   }
+  const handleColor = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isNearWhite(e.target.value)) {
+      setColor(e.target.value)
+    } 
+  }
   return (
     <form onSubmit={handleSubmit}>
       <input
@@ -193,7 +320,7 @@ export const ProjectForm: React.FC = () => {
         name='color'
         type="color"
         value={color}
-        onChange={(e) => setColor(e.target.value)}
+        onChange={handleColor}
       />
       <div
         className="todoActions">
@@ -302,7 +429,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
           <label
             className="status"
           >
-              Status:
+              Completed:
               <input
                 name='completed'
                 type="checkbox"
