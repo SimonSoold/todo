@@ -1,23 +1,8 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-#root {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  min-height: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-}
-body {
-  font-size: calc(14px + 0.390625vw);
+header {
+  position: sticky;
+  top: 0;
+  right: 0;
+  background-color: #242424;
 }
 header, footer {
   display: flex;
@@ -27,36 +12,27 @@ header, footer {
 header div:first-child, footer div:first-child {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: flex-start;
+  justify-content: flex-start;
 }
 header div:last-child, footer div:last-child {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: flex-end;
+  justify-content: flex-start;
 }
 main {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 100%;
   flex-grow: 0;
   flex-shrink: 1;
   flex-basis: auto;
 }
-main div {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-main div div {
+main > .container {
   width: 100%;
 }
-
-
 header details {
   cursor: pointer;
   font-size: 2rem;
@@ -77,7 +53,10 @@ header details > summary:hover {
 header details > summary::-webkit-details-marker {
   display: none;
 }
-header details ul{
+svg {
+  width: 48px;
+}
+header details ul {
   position: absolute;
   list-style: none;
   right: 0;
@@ -101,16 +80,19 @@ header details ul > li, footer, header {
 
 .container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
-
+.projectContainer {
+  width: 100%;
+}
 .navigation {
   display: flex;
-  width: 320px;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   margin-bottom: 8px;
 }
 .navigation a {
@@ -125,26 +107,37 @@ header details ul > li, footer, header {
   margin-bottom: '10px';
 }
 .todoList {
-  padding: 16px;
-  height: 480px;
+  padding: 16px 0 0 0;
+  height: fit-content;
+  max-height: 480px;
   overflow-y: auto;
   display: flex;
   justify-content: flex-start;
+  flex-direction: column;
+  width: 100%;
 }
 .todoList > div {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 16px;
   padding: 8px;
   border-radius: 4px;
   background: #f0f0f0;
   transition: background-color 0.3s;  
   color: black;
-  width: 320px;
+  width: 100%;
+  flex-direction: column;
+}
+.todoItem {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .todoProjectSelector {
-  width: 320px;
+  width: 100%;
 }
 .todoProjectSelector select {
   width: 100%;
@@ -155,17 +148,18 @@ header details ul > li, footer, header {
   height: 120px;
   font-size: 1rem;
 }
-.todoProjectSelector select::-webkit-scrollbar, .todoList::-webkit-scrollbar, .todoDetails > span::-webkit-scrollbar {
+select::-webkit-scrollbar, .todoList::-webkit-scrollbar, .todoDetails > span::-webkit-scrollbar {
   display: none;
 }
-.todoProjectSelector select, .todoList, .todoDetails > span {
+select, .todoProjectSelector select, .todoList, .todoDetails > span {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
 .todoDetails {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
   padding: 0 8px;
   width: 100%;
 }
@@ -183,8 +177,8 @@ header details ul > li, footer, header {
 .todoActions {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: flex-end;
   width: 100%;
 }
 .todoActions > button, form button, .addLabel button, .addLabelButton {
@@ -209,8 +203,8 @@ header details ul > li, footer, header {
 }
 .description {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 100%;
   margin-bottom: 8px;
   border-bottom: 1px solid #ccc;
@@ -223,9 +217,9 @@ header details ul > li, footer, header {
 }
 .addLabel {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   width: 100%;
   margin-bottom: 8px;
   border-bottom: 1px solid #ccc;
@@ -260,19 +254,28 @@ option {
   cursor: pointer;
 }
 
-
+input {
+  border: none;
+  border-bottom: 1px solid black;
+}
+textarea, select {
+  border: 1px solid black;
+}
+input, textarea, select {
+  background: none;
+}
 form {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: flex-start;
+  justify-content: center;
   margin-bottom: 16px;
   padding: 8px;
   border-radius: 4px;
   background: #f0f0f0;
   transition: background-color 0.3s;
   color: black;
-  width: 320px;
+  width: 100%;
 }
 form > *:not(:last-child) {
   margin-bottom: 8px;
@@ -281,8 +284,17 @@ form button {
   align-self: flex-end;
   font-size: 1rem;
 }
-@media only screen and (min-width: 992px) {
-  #root {
-    max-width: 100%;
+.error {
+  color: red;
+}
+
+@media screen and (min-height: 1025px) {
+  .projectContainer, form, .todoList {
+    width: 320px;
+  }
+}
+@media screen and (orientation: landscape) {
+  .projectContainer, form, .todoList {
+    width: 320px;
   }
 }

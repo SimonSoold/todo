@@ -1,15 +1,13 @@
 import React from 'react';
 import { 
-  useDispatch
-} from 'react-redux';
-import { 
   logout
 } from '../redux/userSlice';
 import { 
   useNavigate
 } from 'react-router';
+import { useAppDispatch } from '../hooks';
 export const ThemeMenu: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch()
   const navigate = useNavigate();
   const handleLogout = () => {
     dispatch(logout());
@@ -24,7 +22,6 @@ export const ThemeMenu: React.FC = () => {
             ☰
         </summary>
         <ul>
-            <li>Settings</li>
             <li
               onClick={handleLogout}
             >

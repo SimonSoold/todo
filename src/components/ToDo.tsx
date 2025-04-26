@@ -3,12 +3,10 @@ import { Todo,
   Project,
   TodoFormProps,
   Priority,
-  Label
+  Label,
+  AddLabelProps,
+  InputChangeEvent
 } from '../types';
-import {
-  useSelector, 
-  useDispatch
-} from 'react-redux'
 import {
   setProjectId,
   setComplete,
@@ -23,7 +21,8 @@ import {
   selectProjectId,
   selectProjects,
   selectLabelsByTodoId,
-  selectProject
+  selectProject,
+  selectUserId
 } from '../redux/selectors';
 import { 
   Link, 
@@ -31,23 +30,29 @@ import {
   useParams
 } from 'react-router';
 import ColorPicker from './ColorPicker';
+import { 
+  useAppDispatch,
+  useAppSelector
+} from '../hooks';
 
 export const TodoContainer: React.FC = () => {
   return (
     <div
       className='container'
     >
-      <div
-        className='navigation'
-      >
-        <Link to="/project">
-          New Project
-        </Link>
-        <Link to="/todo">
-          New Todo
-        </Link>
+      <div className="projectContainer">
+        <div
+          className='navigation'
+        >
+          <Link to="/project">
+            New Project
+          </Link>
+          <Link to="/todo">
+            New Todo
+          </Link>
+        </div>
+        <ProjectSelector />
       </div>
-      <ProjectSelector />
       <div
         className='todoList'>
         <TodoList />
@@ -56,10 +61,11 @@ export const TodoContainer: React.FC = () => {
   );
 }
 export const ProjectSelector: React.FC = () => {
-  const dispatch = useDispatch();
-  const projectId = useSelector(selectProjectId);
-  const projects = useSelector(selectProjects);
-  const currentProject = useSelector(selectProject)
+  const dispatch = useAppDispatch()
+;
+  const projectId = useAppSelector(selectProjectId) as string;
+  const projects = useAppSelector(selectProjects) as Project[];
+  const currentProject = useAppSelector(selectProject) as Project
   const handleChange = ( e: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(setProjectId(e.target.value));
   }
@@ -92,7 +98,7 @@ export const ProjectSelector: React.FC = () => {
   )
 }
 export const TodoList: React.FC = () => {
-  const todos = useSelector(selectFilteredTodos);
+  const todos = useAppSelector(selectFilteredTodos) as Todo[];
   return (
     <>
       {
@@ -103,13 +109,14 @@ export const TodoList: React.FC = () => {
     </>
   );
 }
-const AddLabel: React.FC<{ id: string }> = ({ id }) => {
-  const user_id = useSelector((state:any) => state.user.id);
+const AddLabel: React.FC<AddLabelProps> = ({ id }) => {
+  const user_id = useAppSelector<string>(selectUserId) as string;
   const [edit, setEdit] = useState<boolean>(false); 
   const [name, setName] = useState<string>('');
   const [color, setColor] = useState<string>('#000000')
-  const dispatch = useDispatch();
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const dispatch = useAppDispatch()
+;
+  const handleChange = (e: InputChangeEvent) => {
     setName(e.target.value);
   }
   const handleSave = () => {
@@ -135,7 +142,7 @@ const AddLabel: React.FC<{ id: string }> = ({ id }) => {
     setName('');
     setColor('#000000')
   }
-  const handleColor = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleColor = (e: InputChangeEvent) => {
     setColor(e.target.value)
   }
   if (edit) {
@@ -191,10 +198,11 @@ const AddLabel: React.FC<{ id: string }> = ({ id }) => {
   )
 }
 export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, due_date, description }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch()
+;
   const navigate = useNavigate()
-  const labels = useSelector((state:any) => selectLabelsByTodoId(state, id));
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const labels = useAppSelector((state:any) => selectLabelsByTodoId(state, id)) as Label[];
+  const handleChange = (e: InputChangeEvent) => {
     dispatch(setComplete({ id, completed: e.target.checked }));
   }
   const handleEdit = () => {
@@ -284,27 +292,30 @@ export const ProjectContainer: React.FC = () => {
   );
 }
 export const ProjectForm: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch()
+;
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [color, setColor] = useState('#000000');
+  const [name, setName] = useState<string>('');
+  const [color, setColor] = useState<string>('#000000');
+  const userId = useAppSelector<string>(selectUserId) as string;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name) {
       alert('Project name is required');
       return;
     }
-    dispatch(createProject({ name, color: color.length > 0 ? color : null }));
+    dispatch(createProject({ name, color: color.length > 0 ? color : "", user_id: userId }));
     navigate('/');
   };
   const handleCancel = () => {
     navigate('/');
   }
-  const handleColor = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleColor = (e: InputChangeEvent) => {
     setColor(e.target.value)
   }
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='projectForm'>
       <input
         name='name'
         type="text"
@@ -330,12 +341,13 @@ export const ProjectForm: React.FC = () => {
   );  
 }
 export const TodoFormContainer: React.FC = () => {
-  const dispatch = useDispatch();
-  const todos = useSelector(selectFilteredTodos);
-  const userId = useSelector((state:any) => state.user.id);
-  const projectId = useSelector(selectProjectId);
-  const params = useParams()
+  const dispatch = useAppDispatch()
+  const todos = useAppSelector((state: any) => selectFilteredTodos(state)) as Todo[];
+  const userId = useAppSelector<string>(selectUserId);
+  const projectId = useAppSelector<string>(selectProjectId);
+  const params = useParams<string>()
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null)
   const todo = todos.find((todo: Todo) => todo.id === params?.id) || {
     id: '', // Default empty string for id
     created_at: '', // Default empty string for created_at
@@ -345,14 +357,17 @@ export const TodoFormContainer: React.FC = () => {
     is_completed: false,
     due_date: '',
     priority: 'low',
-    project_id: projectId,
-    user_id: userId,
+    project_id: projectId as string,
+    user_id: userId as string,
   }
   const handleSave = (newTodo:Todo|null) => {
     if (params?.id && newTodo) {
       dispatch(editTodo(newTodo));
-    } else {
+    } else if (newTodo) {
       dispatch(addTodo(newTodo));
+    } else {
+      setError("Something went wrong.")
+      return
     }
     navigate('/');
   }
@@ -361,6 +376,13 @@ export const TodoFormContainer: React.FC = () => {
       className='container'
     >
       <TodoForm todo={todo} handleSave={handleSave}/>
+      {
+        error
+        ?
+        <span className="error">{error}</span>
+        : 
+        null
+      }
     </div>
   );
 }
@@ -392,7 +414,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
       navigate('/');
     }
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className='todoForm'>
           <input
               name='title'
               type="text"

@@ -8,21 +8,22 @@ import {
   TodoFormContainer,
   ProjectContainer
  } from './components/ToDo';
-import {
-  useSelector
-} from 'react-redux'
+import {useAppSelector} from "./hooks"
+import { selectToken } from './redux/selectors';
 function App() {
   const location = useLocation();
-  const loggedIn = useSelector((state:any)=> state.user.loggedIn);
   const navigate = useNavigate();
+  const token = useAppSelector(selectToken)
   useEffect(() => {
     document.title = "To Be Is To Do";
   }, []);
   useEffect(() => {
-    if (!loggedIn && (location.pathname !== '/login' && location.pathname !== '/register')) {
-      navigate('/login');
+    if (location.pathname !== "/login" && location.pathname !== "/register") {
+      if (token?.length < 1) {
+        navigate("/login")
+      }
     }
-  }, [location]);
+  }, [location,token])
   return (
     <>
       <header>
@@ -36,17 +37,15 @@ function App() {
         </div>
       </header>
       <main>
-        <div>
-          <Routes>
-            <Route path="/" element={<Todo/>} />
-            <Route path="/login" element={<Login/>} />
-            <Route path="/register" element={<Login/>} />
-            <Route path="/todo/:id" element={<TodoFormContainer/>} />
-            <Route path="/todo" element={<TodoFormContainer/>} />
-            <Route path="/project" element={<ProjectContainer />} />
-            <Route path="*" element={<h2>404 Not Found</h2>} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<Todo/>} />
+          <Route path="/login" element={<Login/>} />
+          <Route path="/register" element={<Login/>} />
+          <Route path="/todo/:id" element={<TodoFormContainer/>} />
+          <Route path="/todo" element={<TodoFormContainer/>} />
+          <Route path="/project" element={<ProjectContainer />} />
+          <Route path="*" element={<h2>404 Not Found</h2>} />
+        </Routes>
       </main>
       <footer>
         <div>

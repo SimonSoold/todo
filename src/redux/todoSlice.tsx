@@ -1,32 +1,46 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import data from "../assets/mock.json"
+import { Todo, TodoState, Project, Label, TaskLabelMap } from '../types'
+const defaultState: TodoState = {
+  todos: [],
+  projectId: "",
+  projects: [],
+  labels: [],
+  taskLabelMaps: []
+}
+const persistedState: TodoState = {
+  todos: [...data.todos as Todo[]],
+  projectId: data.projects[0].id,
+  projects: [...data.projects] as Project[],
+  labels: [...data.labels] as Label[], 
+  taskLabelMaps: [...data.task_label_map] as TaskLabelMap[],
+}
+const initialState: TodoState = {
+  ...defaultState,
+  ...persistedState
+}
+
 const todoSlice = createSlice({
   name: 'todos',
-  initialState: {
-    todos: [...data.todos],
-    projectId: data.projects[0].id,
-    projects: [...data.projects],
-    labels: [...data.labels],
-    taskLabelMaps: [...data.task_label_map],
-  },
+  initialState,
   reducers: {
-    setProjectId(state, action) {
+    setProjectId(state, action:PayloadAction<string>) {
       state.projectId = action.payload
     },
-    setComplete(state,action) { 
+    setComplete(state,action:PayloadAction<{id: string, completed: boolean}>) { 
       const todo = state.todos.find((todo) => todo.id === action.payload.id);
       if (todo) {
         todo.is_completed = action.payload.completed;
         todo.updated_at = new Date().toISOString();
       }
     },
-    deleteTodo(state, action) {
+    deleteTodo(state, action:PayloadAction<{id:string}>) {
       const index = state.todos.findIndex((todo) => todo.id === action.payload.id);
       if (index !== -1) {
         state.todos.splice(index, 1);
       }
     },
-    editTodo(state, action) {
+    editTodo(state, action:PayloadAction<Todo>) {
       let index = state.todos.findIndex((todo) => todo.id === action.payload.id);
       if (index !== -1) {
         state.todos[index] = {
@@ -36,12 +50,9 @@ const todoSlice = createSlice({
         }
       }
     },
-    addTodo(state, action) {
+    addTodo(state, action: PayloadAction<Omit<Todo, 'id' | 'created_at' | 'updated_at' | 'project_id'>>) {
       const todos = state.todos
-      delete action.payload.id
-      delete action.payload.created_at
-      delete action.payload.updated_at
-      const newTodo = {
+      const newTodo: Todo = {
         id: "todo-" + (todos.length + 1),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -50,15 +61,15 @@ const todoSlice = createSlice({
       };        
       state.todos.push(newTodo);
     },
-    createProject(state, action) {  
-      const newProject = {
+    createProject(state, action:PayloadAction<{name:string; color: string | null, user_id: string}>) {  
+      const newProject: Project = {
         id: "project-" + (state.projects.length + 1),
         created_at: new Date().toISOString(),
         ...action.payload
       };
       state.projects.push(newProject);
     },
-    addLabel(state, action) {   
+    addLabel(state, action:PayloadAction<{user_id:string, name:string, id:string, color:string}>) {   
       const labelMap = state.taskLabelMaps.find(item => item.task_id === action.payload.id)
       const newLabel = {
         id: labelMap ? labelMap.label_id : "label-" + (state.labels.length + 1),

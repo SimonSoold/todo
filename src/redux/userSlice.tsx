@@ -1,42 +1,48 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import data from "../assets/mock.json"
+import { saveSessionState, loadSessionState } from '../utils/utils'
+import { User } from '../types'
+const persistedState = loadSessionState("user")
+
+const defaultState: User = {
+  name: "",
+  email: "",
+  created_at: "",
+  id: ""
+}
+const initialState = {
+  ...defaultState,
+  ...persistedState
+}
+
 const userSlice = createSlice({
   name: 'user',
-  initialState: {
-    user: {
-        name: "",
-        email: "",
-        created_at: "",
-        id: "",
-    },
-    loggedIn: false,
-    token: ""
-  },
+  initialState,
   reducers: {
     logout(state) {
-      state.user = {
+      state = {
         name: "",
         email: "",
         created_at: "",
         id: "",
+        token: ""
       }
-      state.loggedIn = false
-      state.token = ""
+      sessionStorage.setItem("user", "")
     },
-    login(state, action) {
-      const user = data.users.find((user) => (user.email === action.payload.username || user.name === action.payload.username) && user.password_hash === action.payload.password);
+    login(_state, action: PayloadAction<{name: string; password: string;}>) {
+      const user = data.users.find((user) => (user.email === action.payload.name || user.name === action.payload.name) && user.password_hash === action.payload.password);
       if (user) {
-        state.user = {
+          const newState: User = {
             name: user.name,
             email: user.email,
             created_at: user.created_at,
             id: user.id,
+            token: "token"
         }
-        state.loggedIn = true
-        state.token = "token"
-      } else {
-        state.loggedIn = false
-      }
+        saveSessionState(newState, "user")
+        return newState
+      } 
+      return defaultState
     }
 }})
 export const { 
