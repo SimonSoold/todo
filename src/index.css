@@ -18,7 +18,6 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
   width: 100%;
   min-height: 100%;
   height: 100%;
@@ -30,4 +29,138 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+}
+header {
+  position: sticky;
+  top: 0;
+  right: 0;
+  background-color: #242424;
+}
+header, footer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+footer p {
+  font-size: 0.8rem;
+}
+header > div, footer > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+header > div:first-child, footer > div:first-child {
+  align-items: flex-start;
+}
+header > div:last-child, footer > div:last-child {
+  align-items: flex-end;
+}
+main {
+  width: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+  overflow-y: auto;
+}
+main > .container {
+  height: 100%;
+}
+header details {
+  cursor: pointer;
+  font-size: 2rem;
+  position: relative;
+  display: inline-block;
+  background: #242424;
+}
+header details > summary {
+  border: none;
+  list-style: none;
+  transition: all 1s ease-in-out;
+  cursor: pointer;
+}
+header details > summary:hover {
+  color: lightgray;
+}
+header details > summary::-webkit-details-marker {
+  display: none;
+}
+svg {
+  width: 48px;
+}
+header details ul {
+  position: absolute;
+  list-style: none;
+  right: 0;
+  color: white;
+  text-align: right;
+  font-size: 1rem;
+}
+header details ul > li {
+  transition: all 1s ease-in-out;
+  border-bottom: 0px dotted transparent;
+  cursor: pointer
+}
+header details ul > li:hover {
+  color: lightgray;
+  border-bottom: 1px solid lightgrey;
+}
+
+header details ul > li, footer, header {
+  white-space: nowrap;
+}
+header > div {
+  text-align: left;
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+option {
+  cursor: pointer;
+}
+input {
+  border: none;
+  border-bottom: 1px solid black;
+}
+textarea, select {
+  border: 1px solid black;
+}
+input, textarea, select {
+  background: none;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin-bottom: 16px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #f0f0f0;
+  transition: background-color 0.3s;
+  color: black;
+  width: 100%;
+}
+form > *:not(:last-child) {
+  margin-bottom: 8px;
+}
+form button {
+  align-self: flex-end;
+  font-size: 1rem;
+}
+
+
+@media screen and (min-width: 667px) {
+  #root {
+    padding: 0.5rem;
+  }
+  header > div > span {
+    position: relative;
+  }
+  header > div:first-child > span > span {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 }

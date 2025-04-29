@@ -1,32 +1,31 @@
-import React from 'react';
-import { 
-  logout
-} from '../redux/userSlice';
-import { 
-  useNavigate
-} from 'react-router';
-import { useAppDispatch } from '../hooks';
-export const ThemeMenu: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login")
-    document.getElementById("hamburger")?.removeAttribute("open");
-  };
+interface HamburgerMenuProps {
+  menuItems?: MenuItem[]
+  disabled: boolean
+}
+interface MenuItem {
+  children: any
+  handleClick: () => void
+  condition: boolean
+}
+export const closeHamburgerMenu = () => document.getElementById("hamburger")?.removeAttribute("open");
+export const HamburgerMenu = ({ menuItems, disabled }: HamburgerMenuProps) => {
   return (
     <details
-      id='hamburger'
+      id="hamburger"
     >
-        <summary>
+        <summary style={{pointerEvents: disabled ? "none" : "auto"}}>
             ☰
         </summary>
         <ul>
-            <li
-              onClick={handleLogout}
-            >
-              Logout</li>
+          {
+            menuItems
+            ?
+            menuItems.map(({children, handleClick, condition}:MenuItem, index: number) => condition ? <li key={index} onClick={handleClick}>{children}</li> : null)
+            :
+            null
+          }
         </ul>
     </details>
   )
 };
+export default HamburgerMenu

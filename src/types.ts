@@ -32,10 +32,7 @@ export interface User {
   }
   
   export type Priority = "low" | "medium" | "high";
-  export interface TodoFormProps {
-    todo: Todo;
-    handleSave: (todo: Todo|null) => void;
-  }
+
   export interface AddLabelProps {
     id: string;
   }
@@ -51,7 +48,6 @@ export interface User {
     created_at: string;
     updated_at: string;
   }
-  
   export interface TaskLabelMap {
     task_id: string;
     label_id: string;
@@ -59,9 +55,5 @@ export interface User {
   export interface TodoForm {
     todo: Todo;
     handleSave: (todo: Todo | null) => void;
-  }
-  export interface ColorPickerProps {
-    handleColor: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    color: string;
   }
   export type InputChangeEvent = React.ChangeEvent<HTMLInputElement>;

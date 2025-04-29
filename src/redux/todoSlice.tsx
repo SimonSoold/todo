@@ -50,14 +50,14 @@ const todoSlice = createSlice({
         }
       }
     },
-    addTodo(state, action: PayloadAction<Omit<Todo, 'id' | 'created_at' | 'updated_at' | 'project_id'>>) {
+    addTodo(state, action: PayloadAction<Omit<Todo, 'created_at' | 'updated_at' | 'project_id'>>) {
       const todos = state.todos
       const newTodo: Todo = {
+        ...action.payload,
         id: "todo-" + (todos.length + 1),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        project_id: state.projectId,
-        ...action.payload
+        project_id: state.projectId
       };        
       state.todos.push(newTodo);
     },
@@ -68,6 +68,21 @@ const todoSlice = createSlice({
         ...action.payload
       };
       state.projects.push(newProject);
+    },
+    deleteProject(state, action:PayloadAction<{id:string}>) {
+      const index = state.projects.findIndex((project: Project) => project.id === action.payload.id);
+      if (index !== -1) {
+        state.projects.splice(index, 1);
+      }
+    },
+    editProject(state, action:PayloadAction<Project>) {
+      let index = state.projects.findIndex((project:Project) => project.id === action.payload.id);
+      if (index !== -1) {
+        state.projects[index] = {
+          ...state.todos[index],
+          ...action.payload,
+        }
+      }
     },
     addLabel(state, action:PayloadAction<{user_id:string, name:string, id:string, color:string}>) {   
       const labelMap = state.taskLabelMaps.find(item => item.task_id === action.payload.id)
@@ -95,6 +110,8 @@ export const {
   editTodo,
   addTodo,
   createProject,
+  deleteProject,
+  editProject,
   addLabel
 } = todoSlice.actions
 export default todoSlice.reducer

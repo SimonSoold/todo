@@ -32,12 +32,12 @@ const userSlice = createSlice({
     login(_state, action: PayloadAction<{name: string; password: string;}>) {
       const user = data.users.find((user) => (user.email === action.payload.name || user.name === action.payload.name) && user.password_hash === action.payload.password);
       if (user) {
-          const newState: User = {
-            name: user.name,
-            email: user.email,
-            created_at: user.created_at,
-            id: user.id,
-            token: "token"
+        const newState: User = {
+          name: user.name,
+          email: user.email,
+          created_at: user.created_at,
+          id: user.id,
+          token: "token"
         }
         saveSessionState(newState, "user")
         return newState

@@ -1,12 +1,4 @@
 import {User} from "../types"
-export const isNearWhite = (hex:string) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    const brightness = (r + g + b) / 3;
-    return brightness > 220; // tweak this threshold as needed
-} 
-
 export const saveSessionState = (state:any, name:string) => {
     try {
         const serializedState = JSON.stringify(state);
@@ -28,3 +20,13 @@ export const loadSessionState = (name: string): User | object => {
         return {};
     }
 }
+export const toShortDateString = (utcString: string) => {
+    const date = new Date(utcString);
+    const pad = (n: number) => String(n).padStart(2, '0');
+  
+    const year = date.getFullYear();       // Full 4-digit year
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+  
+    return `${year}-${month}-${day}`;
+};

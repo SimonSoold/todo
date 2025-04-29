@@ -1,48 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Todo,
-  Project,
-  TodoFormProps,
   Priority,
   Label,
   AddLabelProps,
   InputChangeEvent
-} from '../types';
+} from "../types";
 import {
-  setProjectId,
   setComplete,
   deleteTodo,
   editTodo,
   addTodo,
-  createProject,
   addLabel
 } from "../redux/todoSlice";
 import { 
   selectFilteredTodos,
   selectProjectId,
-  selectProjects,
   selectLabelsByTodoId,
-  selectProject,
-  selectUserId
-} from '../redux/selectors';
+  selectUserId,
+  selectTodoById
+} from "../redux/selectors";
 import { 
   Link, 
   useNavigate,
   useParams
-} from 'react-router';
-import ColorPicker from './ColorPicker';
+} from "react-router";
+import ColorPicker from "./ColorPicker";
 import { 
   useAppDispatch,
-  useAppSelector
-} from '../hooks';
-
+  useAppSelector,
+  useToggle,
+  useDateInput
+} from "../hooks";
+import ErrorField from "./ErrorField";
+import { RootState } from "../redux/store"
+import { ProjectSelector } from "./Project";
+import { toShortDateString } from "../utils/utils";
 export const TodoContainer: React.FC = () => {
   return (
     <div
-      className='container'
+      className="todo container"
     >
-      <div className="projectContainer">
+      <div>
         <div
-          className='navigation'
+          className="navigation"
         >
           <Link to="/project">
             New Project
@@ -54,51 +54,14 @@ export const TodoContainer: React.FC = () => {
         <ProjectSelector />
       </div>
       <div
-        className='todoList'>
+        className="todoList container">
         <TodoList />
       </div>
     </div>
   );
 }
-export const ProjectSelector: React.FC = () => {
-  const dispatch = useAppDispatch()
-;
-  const projectId = useAppSelector(selectProjectId) as string;
-  const projects = useAppSelector(selectProjects) as Project[];
-  const currentProject = useAppSelector(selectProject) as Project
-  const handleChange = ( e: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(setProjectId(e.target.value));
-  }
-  return (
-    <div
-      className='todoProjectSelector'
-      style={{
-        background: currentProject?.color || '#fff',
-        padding: "8px"
-      }}
-    >
-      {
-        projects.length === 0
-        ?
-        <p>No projects available.</p>
-        : 
-        <select name="project" value={projectId} onChange={handleChange} size={4}>
-          {
-            projects.map((project: Project, index:number) => {
-              return (
-                <option key={index} value={project.id}>
-                  {project.name}
-                </option>
-              )
-            })
-          }
-        </select>
-      }
-    </div>
-  )
-}
 export const TodoList: React.FC = () => {
-  const todos = useAppSelector(selectFilteredTodos) as Todo[];
+  const todos = useAppSelector(selectFilteredTodos);
   return (
     <>
       {
@@ -109,38 +72,41 @@ export const TodoList: React.FC = () => {
     </>
   );
 }
-const AddLabel: React.FC<AddLabelProps> = ({ id }) => {
-  const user_id = useAppSelector<string>(selectUserId) as string;
-  const [edit, setEdit] = useState<boolean>(false); 
-  const [name, setName] = useState<string>('');
-  const [color, setColor] = useState<string>('#000000')
+const AddLabel = ({ id }:AddLabelProps) => {
   const dispatch = useAppDispatch()
+
+  const user_id = useAppSelector(selectUserId);
+
+  const [edit, toggleEdit] = useToggle(false)
+
+  const [name, setName] = useState<string>("");
+  const [color, setColor] = useState<string>("#000000")
 ;
   const handleChange = (e: InputChangeEvent) => {
     setName(e.target.value);
   }
   const handleSave = () => {
     if (!name || name.length === 0) {
-      alert('Label name is required');
+      alert("Label name is required");
       return;
     }
     dispatch(addLabel({ name, id, user_id, color }));
-    setName('');
-    setColor('#000000')
-    setEdit(!edit);
+    setName("");
+    setColor("#000000")
+    toggleEdit();
   }
   const handleAdd = () => {
     if (!name || name.length === 0) {
-      alert('Label name is required');
+      alert("Label name is required");
       return;
     }
     dispatch(addLabel({ name, id, user_id, color }));
-    setName('');
+    setName("");
   }
   const handleCancel = () => {
-    setEdit(!edit);
-    setName('');
-    setColor('#000000')
+    toggleEdit();
+    setName("");
+    setColor("#000000")
   }
   const handleColor = (e: InputChangeEvent) => {
     setColor(e.target.value)
@@ -148,7 +114,7 @@ const AddLabel: React.FC<AddLabelProps> = ({ id }) => {
   if (edit) {
     return (
       <div
-        className="addLabel"
+        className="addLabel container"
       >
         <input
           type="text"
@@ -191,23 +157,24 @@ const AddLabel: React.FC<AddLabelProps> = ({ id }) => {
   return (
     <button
       className="addLabelButton"
-      onClick={() => setEdit(!edit)}
+      onClick={() => toggleEdit()}
     >
       Add Label
     </button>
   )
 }
-export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, due_date, description }) => {
-  const dispatch = useAppDispatch()
-;
+export const TodoItem = ({ id, title, is_completed, priority, due_date, description }:Todo) => {
   const navigate = useNavigate()
-  const labels = useAppSelector((state:any) => selectLabelsByTodoId(state, id)) as Label[];
+  const dispatch = useAppDispatch();
+
+  const labels = useAppSelector((state:RootState) => selectLabelsByTodoId(state, id));
+
   const handleChange = (e: InputChangeEvent) => {
     dispatch(setComplete({ id, completed: e.target.checked }));
   }
   const handleEdit = () => {
     if (!id || id.length === 0) {
-      alert('Todo ID is required');
+      alert("Todo ID is required");
       return;
     }
     navigate(`/todo/${id}`)
@@ -216,13 +183,15 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
     dispatch(deleteTodo({ id }));
   }
   return (
-    <div>
+    <div
+      className="todoItem container"
+    >
       <h2>{title}</h2>
       {
         description && description.length > 0
         ?
         <div
-          className="description"
+          className="description container"
         >
           <p>{description}</p>
         </div>
@@ -230,11 +199,12 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
         null
       }
       <div
-        className="todoItem">
-        <div className='todoDetails'>
+        className="container"
+      >
+        <div className="todoDetails container">
           <p>Priority: {priority}</p>
           {
-            due_date && due_date.length > 0
+            due_date && due_date.length
             ?
             <p>Due date: {due_date.substring(0,10)}</p>
             :
@@ -264,7 +234,7 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
           </span>
           <AddLabel id={id}/>
         </div>
-        <div className='todoActions'>
+        <div className="actions">
           <button
             className="edit"
             onClick={handleEdit}
@@ -282,141 +252,74 @@ export const TodoItem: React.FC<Todo> = ({ id, title, is_completed, priority, du
     </div>
   );
 }
-export const ProjectContainer: React.FC = () => {
-  return (
-    <div
-      className='container'
-    >
-      <ProjectForm />
-    </div>
-  );
-}
-export const ProjectForm: React.FC = () => {
-  const dispatch = useAppDispatch()
-;
-  const navigate = useNavigate();
-  const [name, setName] = useState<string>('');
-  const [color, setColor] = useState<string>('#000000');
-  const userId = useAppSelector<string>(selectUserId) as string;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name) {
-      alert('Project name is required');
-      return;
-    }
-    dispatch(createProject({ name, color: color.length > 0 ? color : "", user_id: userId }));
-    navigate('/');
-  };
-  const handleCancel = () => {
-    navigate('/');
-  }
-  const handleColor = (e: InputChangeEvent) => {
-    setColor(e.target.value)
-  }
-  return (
-    <form onSubmit={handleSubmit} className='projectForm'>
-      <input
-        name='name'
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Project Name"
-        required
-      />
-      <span
-        className="labelColorPicker"
-      >
-        <ColorPicker       
-          color={color}
-          handleColor={handleColor}
-        />
-      </span>
-      <div
-        className="todoActions">
-        <button onClick={handleCancel}>Cancel</button>
-        <button type="submit">Save</button>
-      </div>
-    </form>
-  );  
-}
-export const TodoFormContainer: React.FC = () => {
-  const dispatch = useAppDispatch()
-  const todos = useAppSelector((state: any) => selectFilteredTodos(state)) as Todo[];
-  const userId = useAppSelector<string>(selectUserId);
-  const projectId = useAppSelector<string>(selectProjectId);
-  const params = useParams<string>()
-  const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null)
-  const todo = todos.find((todo: Todo) => todo.id === params?.id) || {
-    id: '', // Default empty string for id
-    created_at: '', // Default empty string for created_at
-    updated_at: '', // Default empty string for updated_at
-    title: '',
-    description: '',
-    is_completed: false,
-    due_date: '',
-    priority: 'low',
-    project_id: projectId as string,
-    user_id: userId as string,
-  }
-  const handleSave = (newTodo:Todo|null) => {
-    if (params?.id && newTodo) {
-      dispatch(editTodo(newTodo));
-    } else if (newTodo) {
-      dispatch(addTodo(newTodo));
-    } else {
-      setError("Something went wrong.")
-      return
-    }
-    navigate('/');
-  }
-  return (
-    <div
-      className='container'
-    >
-      <TodoForm todo={todo} handleSave={handleSave}/>
-      {
-        error
-        ?
-        <span className="error">{error}</span>
-        : 
-        null
-      }
-    </div>
-  );
-}
-
-
-export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoFormProps) => {
+export const TodoForm: React.FC = () => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const params = useParams<string>();
+
+    const userId = useAppSelector(selectUserId);
+    const projectId = useAppSelector(selectProjectId);
+    let todo = useAppSelector((state:RootState) => selectTodoById(state, params.id));
+    if (!todo) {
+      todo = {
+        id: "", // Default empty string for id
+        created_at: "", // Default empty string for created_at
+        updated_at: "", // Default empty string for updated_at
+        title: "",
+        description: "",
+        is_completed: false,
+        due_date: "",
+        priority: "low",
+        project_id: projectId as string,
+        user_id: userId as string,
+      }
+    }
+
+    const [error, setError] = useState<string | null>(null);
+
     const [title, setTitle] = useState<string>(todo.title);
     const [description, setDescription] = useState<string>(todo.description);
     const [completed, setCompleted] = useState<boolean>(todo.is_completed);
     const [priority, setPriority] = useState<Priority>(todo.priority);
-    const [dueDate, setDueDate] = useState<string>(todo.due_date || '');
+    const dueDate = useDateInput(todo.due_date || "");
+
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
+      setError(null)
       if (!title) {
-        alert('Title is required');
+        alert("Title is required");
         return;
       }
-      handleSave({
-          ...todo,
-          description,  
-          is_completed: completed,
-          priority,
-          due_date: dueDate,
-          title
-      })
+      const newTodo:Todo = {
+        ...todo,
+        description,  
+        is_completed: completed,
+        due_date: dueDate.value,
+        title
+      }
+      try {
+        if (params?.id && newTodo) {
+          dispatch(editTodo(newTodo));
+        } else if (newTodo) {
+          dispatch(addTodo(newTodo));
+        } else {
+          setError("Something went wrong.")
+          return
+        }
+        navigate("/");
+      } catch (error) {
+        setError("Something went wrong.")
+      }
     };
     const handleCancel = () => {
-      navigate('/');
+      navigate("/");
     }
     return (
-        <form onSubmit={handleSubmit} className='todoForm'>
+      <div className="container">
+        <form onSubmit={handleSubmit} className="todoForm">
           <input
-              name='title'
+              name="title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -424,13 +327,13 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
               required
           />
           <textarea
-              name='description'
+              name="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Todo Description"
           />
           <select
-              name='priority'
+              name="priority"
               value={priority}
               onChange={(e) => setPriority(e.target.value as Priority)}
               size={4}
@@ -440,31 +343,38 @@ export const TodoForm: React.FC<TodoFormProps> = ({ todo, handleSave }: TodoForm
               <option value="high">High</option>
           </select>
           <input
-              autoComplete='true'
-              name='due_date'
+              autoComplete="true"
+              name="due_date"
               type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              min={new Date().toISOString().substring(0,10)} // Set minimum date to today
+              min={(todo.due_date && todo.due_date.length > 0) ? toShortDateString(todo.due_date) : new Date().toISOString().substring(0,10)} // Set minimum date to today
+              {...dueDate}
           />
           <label
             className="status"
           >
               Completed:
               <input
-                name='completed'
+                name="completed"
                 type="checkbox"
                 checked={completed}
                 onChange={(e) => setCompleted(e.target.checked)}
               />
           </label>
+          <div className="error">
+            <ErrorField>
+              {
+                error
+              }
+            </ErrorField>
+          </div>
           <div
-            className="todoActions"
+            className="actions"
           >
             <button onClick={handleCancel}>Cancel</button>
             <button type="submit">Save</button>
           </div>
         </form>
+      </div>
     );
 }
 
