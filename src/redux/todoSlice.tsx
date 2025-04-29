@@ -24,15 +24,16 @@ const todoSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    setProjectId(state, action:PayloadAction<string>) {
-      state.projectId = action.payload
-    },
-    setComplete(state,action:PayloadAction<{id: string, completed: boolean}>) { 
-      const todo = state.todos.find((todo) => todo.id === action.payload.id);
-      if (todo) {
-        todo.is_completed = action.payload.completed;
-        todo.updated_at = new Date().toISOString();
-      }
+    addTodo(state, action: PayloadAction<Omit<Todo, 'created_at' | 'updated_at' | 'project_id'>>) {
+      const todos = state.todos
+      const newTodo: Todo = {
+        ...action.payload,
+        id: "todo-" + (todos.length + 1),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        project_id: state.projectId
+      };        
+      state.todos.push(newTodo);
     },
     deleteTodo(state, action:PayloadAction<{id:string}>) {
       const index = state.todos.findIndex((todo) => todo.id === action.payload.id);
@@ -50,16 +51,15 @@ const todoSlice = createSlice({
         }
       }
     },
-    addTodo(state, action: PayloadAction<Omit<Todo, 'created_at' | 'updated_at' | 'project_id'>>) {
-      const todos = state.todos
-      const newTodo: Todo = {
-        ...action.payload,
-        id: "todo-" + (todos.length + 1),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        project_id: state.projectId
-      };        
-      state.todos.push(newTodo);
+    setComplete(state,action:PayloadAction<{id: string, completed: boolean}>) { 
+      const todo = state.todos.find((todo) => todo.id === action.payload.id);
+      if (todo) {
+        todo.is_completed = action.payload.completed;
+        todo.updated_at = new Date().toISOString();
+      }
+    },
+    setProjectId(state, action:PayloadAction<string>) {
+      state.projectId = action.payload
     },
     createProject(state, action:PayloadAction<{name:string; color: string | null, user_id: string}>) {  
       const newProject: Project = {
@@ -104,11 +104,11 @@ const todoSlice = createSlice({
     }
 }})
 export const { 
-  setProjectId,
   setComplete,
   deleteTodo,
   editTodo,
   addTodo,
+  setProjectId,
   createProject,
   deleteProject,
   editProject,
