@@ -6,8 +6,9 @@ import {
     TaskLabelMap
 } from "../types";
 import { RootState } from "./store";
-export const selectToken = (state:RootState):string | undefined => state.user.token
+
 export const selectUserId = (state:RootState):string => state.user.id
+export const selectToken = (state:RootState):string | undefined => state.user.token
 
 export const selectTodos = (state:RootState):Todo[] => state.todo.todos;
 export const selectProjectId = (state:RootState):string => state.todo.projectId;
@@ -22,12 +23,27 @@ export const selectTodoById = (state:RootState, todoId: string | undefined): Tod
     }
     return state.todo.todos.find((todo: Todo) => todo.id === todoId);
 }; 
+export const selectFilteredTodos = createSelector(
+  [selectTodos, selectProjectId],
+  (todos, projectId): Todo[] => {
+    if (!projectId) return [];
+    return todos.filter((t) => t.project_id === projectId);
+  }
+);
+
 export const selectProjectById = (state:RootState, projectId: string | undefined): Project | undefined | null => {
   if (!projectId) {
       return null
   }
   return state.todo.projects.find((project: Project) => project.id === projectId);
 }; 
+export const selectProject = createSelector(
+  [selectProjects, selectProjectId],
+  (projects, projectId): Project | null => {
+    return projects.find((p) => p.id === projectId) ?? null;
+  }
+);
+
 export const selectLabelIdByTodoId = createSelector(
     [selectLabelMaps, selectTodoById],
     (labelMaps, todo): string | null => {
@@ -42,18 +58,5 @@ export const selectLabelsByTodoId = createSelector(
     if (!labelId) return null;
     // filter always returns an array, so no need for `|| null`
     return labels.filter((lbl) => lbl.id === labelId);
-  }
-);
-export const selectFilteredTodos = createSelector(
-  [selectTodos, selectProjectId],
-  (todos, projectId): Todo[] => {
-    if (!projectId) return [];
-    return todos.filter((t) => t.project_id === projectId);
-  }
-);
-export const selectProject = createSelector(
-  [selectProjects, selectProjectId],
-  (projects, projectId): Project | null => {
-    return projects.find((p) => p.id === projectId) ?? null;
   }
 );

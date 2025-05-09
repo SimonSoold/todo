@@ -4,6 +4,9 @@
   align-items: center;
   justify-content: center;
 }
+.todoForm.container {
+  width: 100%;
+}
 .todo.container {
   justify-content: flex-start;
   width: 100%;
@@ -14,19 +17,7 @@
 .todo.container > div:first-child {
   padding: 0 0 8px 0;
 }
-.navigation {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-.navigation a {
-  text-decoration: none;
-  font-size: 1.2rem;
-  color: #f0f0f0;
-  white-space: nowrap;
-}
+
 .todoList {
   justify-content: flex-start;
   height: fit-content;
@@ -44,6 +35,28 @@
 }
 .todoItem > .container {
   width: 100%;
+}
+
+.todoDetails {
+  align-items: flex-start;
+  padding: 0 8px;
+  width: 100%;
+}
+.todoDetails > span {
+  width: 100%;
+  text-align: left;
+  overflow-y: auto;
+}
+.todoDetails p > span {
+  margin-left: 4px;
+}
+.todoDetails p > span span {
+  margin-right: 4px;
+}
+
+
+.projectForm.container {
+  width: 84%;
 }
 .projectItem {
   width: 100%;
@@ -87,22 +100,9 @@
 .projectItem > .actions {
   width: fit-content;
 }
-.todoDetails {
-  align-items: flex-start;
-  padding: 0 8px;
-  width: 100%;
-}
-.todoDetails > span {
-  width: 100%;
-  text-align: left;
-  overflow-y: auto;
-}
-.todoDetails p > span {
-  margin-left: 4px;
-}
-.todoDetails p > span span {
-  margin-right: 4px;
-}
+
+
+
 .actions {
   display: flex;
   flex-direction: row;
@@ -125,11 +125,13 @@
 .actions > button:last-child {
   margin-left: 8px;
 }
+
 .status {
   display: flex;
   align-items: center;
   width: 100%;
 }
+
 .description {
   width: 100%;
   margin-bottom: 8px;
@@ -141,6 +143,7 @@
 .description p {
   text-align: left;
 }
+
 .addLabel {
   align-items: flex-start;
   width: 100%;
@@ -169,9 +172,24 @@
   cursor: pointer;
 }
 
+.navigation {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.navigation a {
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+  white-space: nowrap;
+}
+
 .error {
   height: 24px;
 }
+
 select::-webkit-scrollbar, .projectSelector::-webkit-scrollbar, .todoList::-webkit-scrollbar, .todoDetails > span::-webkit-scrollbar {
   display: none;
 }

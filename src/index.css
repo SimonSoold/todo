@@ -129,6 +129,10 @@ textarea, select {
 input, textarea, select {
   background: none;
 }
+textarea {
+  height: 20dvh;
+  width: 100%;
+}
 form {
   display: flex;
   flex-direction: column;

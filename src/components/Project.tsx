@@ -131,8 +131,8 @@ export const ProjectForm: React.FC = () => {
         setColor(e.target.value)
     }
     return (
-        <div className="container">
-        <form onSubmit={handleSubmit} className="projectForm">
+        <div className="projectForm container">
+        <form onSubmit={handleSubmit}>
             <input
             name="name"
             type="text"

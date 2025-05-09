@@ -35,6 +35,7 @@ import ErrorField from "./ErrorField";
 import { RootState } from "../redux/store"
 import { ProjectSelector } from "./Project";
 import { toShortDateString } from "../utils/utils";
+
 export const TodoContainer: React.FC = () => {
   return (
     <div
@@ -316,8 +317,8 @@ export const TodoForm: React.FC = () => {
       navigate("/");
     }
     return (
-      <div className="container">
-        <form onSubmit={handleSubmit} className="todoForm">
+      <div className="todoForm container">
+        <form onSubmit={handleSubmit}>
           <input
               name="title"
               type="text"
