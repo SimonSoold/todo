@@ -25,8 +25,8 @@ jobs:
         with:
           branch: gh-pages
           folder: dist
-          commit_message: "Deploy from GitHub Actions"
+          commit-message: "Deploy from GitHub Actions"
           clean: true
-          single_commit: true
-          git_config_name: github-actions
-          git_config_email: github-actions@github.com
+          single-commit: true
+          git-config-name: github-actions
+          git-config-email: github-actions@github.com
