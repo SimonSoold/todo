@@ -20,6 +20,9 @@ jobs:
           npm ci
           npm run build
 
+      - name: Check output directory
+        run: ls -la dist
+
       - name: Verify output folder
         run: ls -la dist
 
