@@ -17,11 +17,13 @@ jobs:
           npm ci
           npm run build
 
-      - name: List build folder 📂
-        run: ls -la build
-
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: build
+          folder: build # or dist, depending on your build output
+          commit_message: "Deploy from GitHub Actions"
+          clean: true
+          single_commit: true
+          git_config_name: github-actions
+          git_config_email: github-actions@github.com
