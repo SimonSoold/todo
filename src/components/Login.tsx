@@ -36,7 +36,7 @@ const Login: React.FC = () => {
         }
     }
     return (
-        <div>
+        <div className="login">
             <form onSubmit={handleSubmit}>
                 <label htmlFor="name">Name:</label>
                 <input autoComplete="true" type="text" id="name" name="name" required/>
