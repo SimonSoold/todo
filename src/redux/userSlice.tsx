@@ -19,14 +19,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    logout(state) {
-      state = {
-        name: "",
-        email: "",
-        created_at: "",
-        id: "",
-        token: ""
-      }
+    logout() {
       sessionStorage.setItem("user", "")
     },
     login(_state, action: PayloadAction<{name: string; password: string;}>) {
