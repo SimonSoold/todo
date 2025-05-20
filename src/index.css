@@ -154,6 +154,12 @@ form button {
   align-self: flex-end;
   font-size: 1rem;
 }
+.formInput, .textarea {
+  width: 100%;
+}
+.colorPicker {
+  border: none;
+}
 
 @media screen and (min-width: 667px) {
   #root {

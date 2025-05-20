@@ -28,6 +28,7 @@ const ColorPicker = ({handleColor,color,brightnessThreshold}:ColorPickerProps) =
     return (
         <>
             <input
+                className="colorPicker"
                 style={{
                     margin: "0 0 8px 0"
                 }}

@@ -319,7 +319,9 @@ export const TodoForm: React.FC = () => {
     return (
       <div className="todoForm container">
         <form onSubmit={handleSubmit}>
+          <h2>{todo?.title ? "Edit Todo" : "New Todo"}</h2>
           <input
+              className="formInput"
               name="title"
               type="text"
               value={title}
@@ -328,6 +330,7 @@ export const TodoForm: React.FC = () => {
               required
           />
           <textarea
+              className="textarea"
               name="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -344,6 +347,7 @@ export const TodoForm: React.FC = () => {
               <option value="high">High</option>
           </select>
           <input
+              className="formInput"
               autoComplete="true"
               name="due_date"
               type="date"

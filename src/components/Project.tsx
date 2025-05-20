@@ -131,15 +131,17 @@ export const ProjectForm: React.FC = () => {
         setColor(e.target.value)
     }
     return (
-        <div className="projectForm container">
+      <div className="projectForm container">
         <form onSubmit={handleSubmit}>
+            <h2>{project?.name || "New Project"}</h2>
             <input
-            name="name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Project Name"
-            required
+              className="formInput"
+              name="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Project Name"
+              required
             />
             <span
             className="labelColorPicker"
@@ -163,6 +165,6 @@ export const ProjectForm: React.FC = () => {
               <button type="submit">Save</button>
             </div>
         </form>
-        </div>
+      </div>
     );  
 }
