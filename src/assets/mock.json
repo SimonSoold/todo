@@ -4,7 +4,7 @@
         "id": "user-1",
         "name": "Alice Johnson",
         "email": "alice@example.com",
-        "password_hash": "hashed_pw",
+        "password_hash": "password",
         "created_at": "2025-04-01T10:00:00Z"
       }
     ],

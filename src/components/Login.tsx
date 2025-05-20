@@ -3,11 +3,16 @@ import { login } from "../redux/userSlice";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "../hooks";
 import ErrorField from "./ErrorField";
+import { User } from "../types";
+import Data from "../assets/mock.json"
+
 interface ValidationItem {
     name?: string
     password?: string
 }  
 const Login: React.FC = () => {
+    const {name, password_hash} = Data.users[0] as User;
+    const [formData, setFormData] = useState<ValidationItem>({name, password: password_hash})
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
@@ -39,14 +44,29 @@ const Login: React.FC = () => {
         <div className="login">
             <form onSubmit={handleSubmit}>
                 <label htmlFor="name">Name:</label>
-                <input autoComplete="true" type="text" id="name" name="name" required/>
+                <input 
+                    autoComplete="on" 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
                 <ErrorField>
                     {
                         errors.name
                     }
                 </ErrorField>
                 <label htmlFor="password">Password:</label>
-                <input type="password" id="password" name="password" required />
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                />
                 <ErrorField>
                     {
                         errors.password
