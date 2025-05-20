@@ -21,7 +21,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: build # or dist, depending on your build output
+          folder: dist
           commit_message: "Deploy from GitHub Actions"
           clean: true
           single_commit: true
