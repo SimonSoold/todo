@@ -30,3 +30,4 @@ jobs:
           single-commit: true
           git-config-name: github-actions
           git-config-email: github-actions@github.com
+          token: ${{ secrets.GITHUB_TOKEN }}
